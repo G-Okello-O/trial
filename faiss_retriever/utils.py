@@ -1,12 +1,14 @@
 # faiss_retriever/utils.py
 
-import geocoder
 from datetime import datetime
+
+import geocoder
+
 
 def get_location_and_date():
     """Fetches the current location and date."""
     # Get the current location
-    g = geocoder.ip('me')
+    g = geocoder.ip("me")
 
     # Get the current date and time
     now = datetime.now()
@@ -22,6 +24,7 @@ def get_location_and_date():
     print(f"Current Date: {current_date}")
 
     return g.city, g.state, current_month, current_date
+
 
 def format_docs(docs):
     """Formats a list of documents into a single string."""
