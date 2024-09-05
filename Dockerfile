@@ -1,26 +1,28 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8-slim
+# Use the latest Python image from the official Docker hub
+FROM python:latest
+
+# Set environment variables to prevent Python from writing .pyc files
+# and to ensure that Python outputs everything to the console
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Install Poetry
-RUN pip install poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Add Poetry to PATH
+ENV PATH="/root/.local/bin:$PATH"
 
-# Install dependencies with Poetry
-RUN poetry install --no-dev
+# Copy only the Poetry configuration files first
+COPY pyproject.toml poetry.lock* /app/
 
-# Make port 8000 available to the world outside this container
-EXPOSE 8000
+# Install dependencies using Poetry
+RUN poetry install --no-root --no-dev
 
-# Copy the environment check script
-COPY check_env.sh /app/check_env.sh
+# Copy the rest of the application code
+COPY . /app/
 
-# Make the script executable
-RUN chmod +x /app/check_env.sh
-
-# Run the environment check script and then run the app
-CMD ["/bin/bash", "-c", "/app/check_env.sh && poetry run chainlit run main.py --port 8000"]
+# Command to run on container start
+CMD ["poetry", "run", "chainlit", "run", "main.py"]

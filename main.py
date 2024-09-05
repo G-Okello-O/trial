@@ -1,7 +1,10 @@
 import os
+from typing import Dict, Optional
 
 import chainlit as cl
+from chainlit.types import ThreadDict
 from dotenv import load_dotenv
+from langchain.memory import ConversationBufferMemory
 from langchain_community.llms import Cohere
 
 from faiss_retriever.rag_chain import generate_rag_chain, translate_text
@@ -15,13 +18,48 @@ retriever = None
 rag_chain = None
 
 
+@cl.oauth_callback
+def oauth_callback(
+    provider_id: str,
+    token: str,
+    raw_user_data: Dict[str, str],
+    default_user: cl.User,
+) -> Optional[cl.User]:
+    return default_user
+
+
+@cl.on_chat_resume
+async def on_chat_resume(thread: ThreadDict):
+    memory = ConversationBufferMemory(return_messages=True)
+    root_messages = [m for m in thread["steps"] if m["parentId"] is None]
+    for message in root_messages:
+        if message["type"] == "user_message":
+            memory.chat_memory.add_user_message(message["output"])
+        else:
+            memory.chat_memory.add_ai_message(message["output"])
+
+    cl.user_session.set("memory", memory)
+
+    # Ensure runnable is defined globally and used to invoke the RAG chain
+    global rag_chain
+    cl.user_session.set("query", rag_chain)
+
+
 @cl.on_chat_start
 async def init():
     global retriever, rag_chain
 
+    app_user = cl.user_session.get("user")
+
+    await cl.Message(f"Hello {app_user.identifier}").send()
+
+    cl.user_session.set(
+        "memory", ConversationBufferMemory(return_messages=True)
+    )
+
     # Send an initial message
     await cl.Message(
-        content="Initializing the AgriRAG system... " "This may take a moment."
+        content="Initializing the AgriRAG system... This may take a moment."
     ).send()
 
     # Initialize the FAISSRetriever and create/load the index
@@ -44,6 +82,7 @@ async def init():
 
 @cl.on_message
 async def on_message(message: cl.Message):
+    memory = cl.user_session.get("memory")
     runnable = cl.user_session.get("query")  # type: Runnable
 
     # Translate the input if it's in Swahili
@@ -64,3 +103,7 @@ async def on_message(message: cl.Message):
     # Send the response back to the user
     if not cb.answer_reached:
         await cl.Message(content=res).send()
+
+    # Update conversation memory
+    memory.chat_memory.add_user_message(message.content)
+    memory.chat_memory.add_ai_message(res)
