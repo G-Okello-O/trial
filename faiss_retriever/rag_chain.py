@@ -1,16 +1,14 @@
-# faiss_retriever/rag_chain.py
-
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from transformers import pipeline
 
-from .utils import format_docs, get_location_and_date
+from utils import format_docs, get_location_and_date
 
 
 def generate_rag_chain(retriever, llm):
     """Generates the RAG chain using the location, date, and language model."""
-    (city, state, current_month, current_date) = get_location_and_date()
+    city, state, current_month, current_date = get_location_and_date()
 
     # Dynamically format the template using f-strings
     template = f"""
@@ -19,8 +17,8 @@ def generate_rag_chain(retriever, llm):
     If you don't know the answer, just say that you don't know,
     don't try to make up an answer.
     Use three sentences maximum and keep the answer as concise
-    as possible.Always say "thanks for asking!" at the end of
-    the answer.
+    as possible. Always say "thanks for asking!" at the end
+    of the answer.
 
     Location: {city}, {state}
     Date: {current_month} {current_date}
@@ -58,6 +56,3 @@ def translate_text(
     translated_text = translation["translation_text"]
     print(f"Translated text: {translated_text}")
     return translated_text
-
-
-# Note: We've removed the translate_and_invoke_rag_chain function from here
