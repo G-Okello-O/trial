@@ -2,6 +2,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from transformers import pipeline
+from deep_translator import GoogleTranslator
 
 from utils import format_docs, get_location_and_date
 
@@ -56,3 +57,7 @@ def translate_text(
     translated_text = translation["translation_text"]
     print(f"Translated text: {translated_text}")
     return translated_text
+
+def eng_sw_translator(text_to_translate):
+    translator = GoogleTranslator(source='auto', target='sw')
+    return translator.translate(text_to_translate)

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from langchain.memory import ConversationBufferMemory
 from langchain_community.llms import Cohere
 
-from faiss_retriever.rag_chain import generate_rag_chain, translate_text
+from faiss_retriever.rag_chain import generate_rag_chain, translate_text, eng_sw_translator
 from faiss_retriever.retriever import FAISSRetriever
 
 # Load environment variables from .env file
@@ -99,6 +99,8 @@ async def on_message(message: cl.Message):
 
     # Invoke the RAG chain
     res = await runnable.ainvoke(translated_text, callbacks=[cb])
+    
+    res = eng_sw_translator(res)
 
     # Send the response back to the user
     if not cb.answer_reached:
