@@ -11,14 +11,12 @@ from langchain.document_loaders import PyPDFLoader
 from langchain_community.document_loaders import OnlinePDFLoader
 from langchain_community.document_loaders import UnstructuredPDFLoader
 
-
-
 class FAISSRetriever:
     def __init__(
-        self,
-        data_path,
-        index_path="faiss_index",
-        allow_dangerous_deserialization=False,
+            self,
+            data_path,
+            index_path="faiss_index",
+            allow_dangerous_deserialization=False,
     ):
         self.data_path = data_path
         self.index_path = index_path
@@ -35,12 +33,13 @@ class FAISSRetriever:
     def load_dataframes(self):
         """Load data from Excel file."""
         return pd.read_excel(self.data_path[0], sheet_name=None)
-    
+
     def load_pdf(self):
         """Load data from PDF file."""
-        loading = PyPDFLoader(self.data_path[1])
-        print(f"The number of rows in the pdf are {len(loading)}")
-        return loading
+        loader = PyPDFLoader(self.data_path[1])
+        pages = loader.load()
+        print(f"The number of pages in the PDF is: {len(pages)}")
+        return pages
 
     def preprocess_data(self, df_dict):
         """Combine all columns into a single 'text' column
@@ -55,8 +54,9 @@ class FAISSRetriever:
                 all_documents.extend(documents)
             except Exception as e:
                 print(f"Error loading data from sheet {sheet_name}: {e}")
-        
-        all_documents += self.load_pdf()
+
+        pdf_documents = self.load_pdf()
+        all_documents.extend(pdf_documents)
         return self.text_splitter.split_documents(all_documents)
 
     def create_faiss_index(self, docs):

@@ -4,7 +4,7 @@ from langchain_core.runnables import RunnablePassthrough
 from transformers import pipeline
 from deep_translator import GoogleTranslator
 
-from utils import format_docs, get_location_and_date
+from faiss_retriever.utils import get_location_and_date, format_docs
 
 
 def generate_rag_chain(retriever, llm):

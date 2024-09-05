@@ -2,6 +2,8 @@ import os
 from typing import Dict, Optional
 
 import chainlit as cl
+import httpx
+from httpx import Timeout
 from chainlit.types import ThreadDict
 from dotenv import load_dotenv
 from langchain.memory import ConversationBufferMemory
@@ -12,6 +14,9 @@ from faiss_retriever.retriever import FAISSRetriever
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Set global timeout for HTTPX
+httpx.DEFAULT_TIMEOUT = Timeout(90.0)
 
 # Initialize global variables
 retriever = None

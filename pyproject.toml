@@ -20,6 +20,8 @@ sentencepiece = "^0.2.0"
 sacremoses = "^0.1.1"
 langchain-cohere = "^0.2.3"
 geocoder = "^1.38.1"
+deep-translator = "^1.11.4"
+httpx = "^0.27.2"
 
 
 [tool.poetry.group.dev.dependencies]
