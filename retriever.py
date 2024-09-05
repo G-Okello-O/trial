@@ -7,6 +7,11 @@ from langchain_community.document_loaders import DataFrameLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import TokenTextSplitter
+from langchain_community.document_loaders import OnlinePDFLoader
+from langchain_community.document_loaders import UnstructuredPDFLoader
+from langchain.document_loaders import PyPDFLoader
+
+
 
 
 class FAISSRetriever:
@@ -30,7 +35,14 @@ class FAISSRetriever:
 
     def load_dataframes(self):
         """Load data from Excel file."""
-        return pd.read_excel(self.data_path, sheet_name=None)
+        return pd.read_excel(self.data_path[0], sheet_name=None)
+    
+    def load_pdf(self):
+        """Load data from PDF file."""
+        loader = PyPDFLoader(self.data_path[1])
+        print(f"The number of rows in the pdf document is {len(loader)}")
+
+        return loader
 
     def preprocess_data(self, df_dict):
         """Combine all columns into a single 'text' column
@@ -45,6 +57,11 @@ class FAISSRetriever:
                 all_documents.extend(documents)
             except Exception as e:
                 print(f"Error loading data from sheet {sheet_name}: {e}")
+
+        print(f"The excel data has {len(all_documents)} rows")
+
+        all_documents += self.load_pdf(self)
+        print(f"The excel data and pdf document now have {len(all_documents)} rows")
         return self.text_splitter.split_documents(all_documents)
 
     def create_faiss_index(self, docs):

@@ -63,7 +63,7 @@ async def init():
     ).send()
 
     # Initialize the FAISSRetriever and create/load the index
-    data_path = "Data/Weather Agro Advisory Knowledge Base.xlsx"
+    data_path = ["AgriChat/Data/Weather Agro Advisory Knowledge Base.xlsx","AgriChat/Data/ELRP-Training-Manual-Final.pdf" ]
     retriever = FAISSRetriever(data_path, allow_dangerous_deserialization=True)
     retriever.retrieve_docs()
 
