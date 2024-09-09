@@ -4,7 +4,8 @@ FROM python:3.12-slim
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    POETRY_VERSION=1.6.1
+    POETRY_VERSION=1.6.1 \
+    PORT=8000  # Default to port 8000 if not set
 
 # Set working directory
 WORKDIR /app
@@ -27,8 +28,8 @@ RUN poetry install --no-root --no-dev
 # Copy the rest of the application code
 COPY . /app/
 
-# Expose port 8000 explicitly
-EXPOSE 8000
+# Expose port (default to 8000)
+EXPOSE ${PORT}
 
-# Command to run the app with Poetry and Chainlit, listening on port 8000
-CMD ["poetry", "run", "chainlit", "run", "main.py", "-h", "0.0.0.0", "--port", "8000"]
+# Command to run the app with Poetry and Chainlit, evaluating environment variable for PORT
+CMD sh -c "poetry run chainlit run main.py -h 0.0.0.0 --port ${PORT}"
