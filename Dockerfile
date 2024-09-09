@@ -27,8 +27,8 @@ RUN poetry install --no-root --no-dev
 # Copy the rest of the application code
 COPY . /app/
 
-# Expose port (Railway automatically maps this, but it's good practice)
-EXPOSE 8000
+# Set environment variables
+ENV PYTHONUNBUFFERED 1
 
-# Command to run the Chainlit app with -h flag to prevent browser from opening
-CMD ["poetry", "run", "chainlit", "run", "main.py", "-h"]
+# Command to run the app
+CMD python -m chainlit run app.py -h --host 0.0.0.0 --port ${PORT}
