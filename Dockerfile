@@ -1,28 +1,34 @@
-# Use the latest Python image from the official Docker hub
-FROM python:latest
+# Base image with Python installed
+FROM python:3.12-slim
 
-# Set environment variables to prevent Python from writing .pyc files
-# and to ensure that Python outputs everything to the console
+# Set environment variables
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+    PYTHONDONTWRITEBYTECODE=1 \
+    POETRY_VERSION=1.6.1
 
-# Set the working directory in the container
+# Set working directory
 WORKDIR /app
 
-# Install Poetry
+# Install system dependencies
+RUN apt-get update && apt-get install -y curl build-essential libpq-dev
+
+# Install Poetry using the official installation script
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
-# Add Poetry to PATH
+# Add Poetry to the PATH
 ENV PATH="/root/.local/bin:$PATH"
 
-# Copy only the Poetry configuration files first
+# Copy Poetry dependency files
 COPY pyproject.toml poetry.lock* /app/
 
-# Install dependencies using Poetry
+# Install dependencies without dev packages and root
 RUN poetry install --no-root --no-dev
 
 # Copy the rest of the application code
 COPY . /app/
 
-# Command to run on container start
+# Expose port (Railway automatically maps this, but it's good practice)
+EXPOSE 8000
+
+# Command to run the Chainlit app
 CMD ["poetry", "run", "chainlit", "run", "main.py"]
