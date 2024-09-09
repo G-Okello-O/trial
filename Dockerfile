@@ -30,5 +30,5 @@ COPY . /app/
 # Expose port (Railway automatically maps this, but it's good practice)
 EXPOSE 8000
 
-# Command to run the Chainlit app
-CMD ["poetry", "run", "chainlit", "run", "main.py"]
+# Command to run the Chainlit app with -h flag to prevent browser from opening
+CMD ["poetry", "run", "chainlit", "run", "main.py", "-h", "0.0.0.0"]
