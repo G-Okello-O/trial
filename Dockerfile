@@ -5,7 +5,7 @@ FROM python:3.12-slim
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     POETRY_VERSION=1.6.1 \
-    PORT=8000  # Default to port 8000 if not set
+    PORT=8000
 
 # Set working directory
 WORKDIR /app
