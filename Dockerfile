@@ -32,4 +32,4 @@ COPY . /app/
 EXPOSE ${PORT}
 
 # Command to run the app with Poetry and Chainlit, evaluating environment variable for PORT
-CMD sh -c "poetry run chainlit run main.py -h 0.0.0.0 --port ${PORT}"
+CMD sh -c "poetry run chainlit run main.py --host=0.0.0.0 --port=${PORT}"
