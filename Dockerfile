@@ -27,8 +27,8 @@ RUN poetry install --no-root --no-dev
 # Copy the rest of the application code
 COPY . /app/
 
-# Set environment variables
-ENV PYTHONUNBUFFERED 1
+# Expose port 8000 explicitly
+EXPOSE 8000
 
-# Command to run the app
-CMD python -m chainlit run app.py -h --host 0.0.0.0 --port ${PORT}
+# Command to run the app with Poetry and Chainlit, listening on port 8000
+CMD ["poetry", "run", "chainlit", "run", "main.py", "-h", "0.0.0.0", "--port", "8000"]
