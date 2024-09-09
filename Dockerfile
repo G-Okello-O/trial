@@ -31,4 +31,4 @@ COPY . /app/
 EXPOSE 8000
 
 # Command to run the Chainlit app with -h flag to prevent browser from opening
-CMD ["poetry", "run", "chainlit", "run", "main.py", "-h", "0.0.0.0"]
+CMD ["poetry", "run", "chainlit", "run", "main.py", "-h"]
