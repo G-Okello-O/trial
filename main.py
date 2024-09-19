@@ -95,9 +95,9 @@ def calculate_averages(daily_data: Dict) -> Dict[str, float]:
 
 def format_weather_info(averages: Dict) -> str:
     """Format weather information for display."""
-    weather_info = f"📊 **Averages over 16 Days:**\n"
-    weather_info += f"🔹 **Average Temperature:** {averages['avg_temp']:.2f}°C\n"
-    weather_info += f"🔹 **Average Precipitation:** {averages['avg_precip']:.2f} mm\n"
+    weather_info = f"📊 **Wastani zaidi ya Siku 16:**\n"
+    weather_info += f"🔹 **Wastani wa Joto:** {averages['avg_temp']:.2f}°C\n"
+    weather_info += f"🔹 **Wastani wa Mvua:** {averages['avg_precip']:.2f} mm\n"
 
     if averages['missing_days']:
         weather_info += "\n⚠️ **Note:** Missing data for the following days: "
