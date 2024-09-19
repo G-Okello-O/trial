@@ -13,18 +13,7 @@ def generate_rag_chain(retriever, llm, county_name: str, avg_temp_over_days: flo
     # Dynamically format the template using f-strings
     template = f"""
     You are an expert large language model in Agriculture in Kenya.
-def translate_text(text_to_translate, model_name="Helsinki-NLP/opus-mt-sw-en"):
-    """Translate a Swahili text to English."""
-    translator = pipeline("translation", model=model_name)
-    translation = translator(text_to_translate)[0]
-    translated_text = translation["translation_text"]
-    print(f"Translated text: {translated_text}")
-    return translated_text
 
-def eng_sw_translator(text_to_translate):
-    """Translate an English text to Swahili."""
-    translator = GoogleTranslator(source='auto', target='sw')
-    return translator.translate(text_to_translate)
     Your task is to give agricultural advisory to farmers based on their location, location weather forecast, and the crop they enquire about.
 
     If the crop is not suitable for the user's location, suggest another crop.
