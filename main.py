@@ -100,7 +100,7 @@ def format_weather_info(averages: Dict) -> str:
     weather_info += f"🔹 **Wastani wa Mvua:** {averages['avg_precip']:.2f} mm\n"
 
     if averages['missing_days']:
-        weather_info += "\n⚠️ **Note:** Missing data for the following days: "
+        weather_info += "\n⚠️ **Kumbuka:** Hakuna data kwa siku zifuatazo: "
         weather_info += ", ".join(map(str, averages['missing_days']))
 
     return weather_info
