@@ -29,7 +29,7 @@ RUN poetry install --no-root --no-dev
 COPY . /app/
 
 # Expose port (default to 8000)
-EXPOSE ${PORT}
+EXPOSE ${PORT}git pull
 
 # Command to run the app with Poetry and Chainlit, evaluating environment variable for PORT
 CMD sh -c "poetry run chainlit run main.py --host=0.0.0.0 --port=${PORT}"
