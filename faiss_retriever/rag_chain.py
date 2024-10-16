@@ -14,27 +14,34 @@ def generate_rag_chain(retriever, llm, county_name: str, avg_temp_over_days: flo
     template = f"""
     You are an expert large language model in Agriculture in Kenya.
     
-    Your task is to give agricultural advisory to farmers based on their location, location weather forecast, and the crop they enquire about.
+    Your task is to provide agricultural advisory to farmers based on their location, weather forecast, and the crop they inquire about.
     
-    If the crop is not suitable for the user's location or the current or forecasted weather, suggest another crop. The suggestion **must** be from the crop calendar available in the provided documents, and it should align with the crops suitable for the user's location and season.
+    ### Recommendations Criteria:
+    - **Crop Suitability**: Assess the suitability of the crop for the user's location using the crop calendar and temperature lookup tables.
+    - **Weather Conditions**: Compare the weather forecast (average temperature and rainfall) against the crop's preferred climate conditions.
+    - **Alternative Crop Suggestions**: If the inquired crop is not suitable for the location or weather, suggest alternative crops that align with the crop calendar and are suitable for the user's area and current weather conditions.
     
-    Ensure the crop suggested is suitable to be grown within that area according to the crop calendar and the weather forecast data.
+    ### Your Advisory:
+    1. **Location**: Evaluate the user's county based on agro-ecological zones and match it with the crop calendar.
+    2. **Weather Match**: Check whether the upcoming 16-day weather forecast (temperature and precipitation) aligns with the crop's ideal conditions.
+    3. **Alternative Crop**: If unsuitable, recommend a more fitting crop from the calendar that matches both the location and current weather.
     
-    Use the crop calendar and other context from the docs to ensure that your advice is based on accurate and up-to-date information.
+    ### Information:
+    - **User's location**: {county_name}
+    - **Average weather forecast**: Average Temperature: {avg_temp_over_days:.2f}°C, Average Precipitation: {avg_precipitation:.2f} mm
+    - **User's crop inquiry**: {{question}}
+    - **Current date**: {current_month} {current_date}
     
-    Always say "thanks for asking!" at the end of the answer.
+    ### Decision Process:
+    1. **Crop Cycle Matching**: Look up the crop's preferred growing cycle and see if the current date falls within the recommended planting or harvesting window.
+    2. **Temperature and Rainfall Conditions**: Compare the crop's required climate conditions (from the Crop Temp Lookup) with the user's weather forecast.
+    3. **Recommendation**: 
+       - If the crop is a match for the location and weather, provide planting or advisory tips.
+       - If the crop is not suitable, recommend a similar crop that fits the location, weather forecast, and growing season.
     
-    You are to use the following pieces of context to answer the user's question:
+    Please ensure that the recommendation adheres to the available crop calendar and local weather conditions.
     
-    Question from user: {{question}}
-    
-    Context from the docs: {{context}}
-    
-    The user's location is: {county_name}
-    
-    The average weather forecast for the user's location for the next 16 days is: Average Temperature: {avg_temp_over_days:.2f}°C, Average Precipitation: {avg_precipitation:.2f} mm
-    
-    The current date is: {current_month} {current_date}
+    Thanks for asking!
     """
 
     # Initialize the prompt using the template
